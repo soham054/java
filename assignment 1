@@ -1,0 +1,48 @@
+import java.math.BigInteger;
+import java.util.Scanner;
+
+public class DAA1 {
+
+public static BigInteger karatsubaMultiply(BigInteger num1, BigInteger num2) {
+
+// Base case: if either number is smaller than 10, multiply directly
+if (num1.compareTo(BigInteger.TEN) &lt; 0 || num2.compareTo(BigInteger.TEN) &lt; 0) {
+return num1.multiply(num2);
+}
+
+// Get the max length of the two numbers
+int maxLength = Math.max(num1.toString().length(), num2.toString().length());
+int halfLength = maxLength / 2;
+
+// Split the numbers in two halves
+BigInteger powerOfTen = BigInteger.TEN.pow(halfLength);
+BigInteger high1 = num1.divide(powerOfTen);
+BigInteger low1 = num1.mod(powerOfTen);
+BigInteger high2 = num2.divide(powerOfTen);
+BigInteger low2 = num2.mod(powerOfTen);
+
+// Recursively calculate the products
+BigInteger highProduct = karatsubaMultiply(high1, high2);
+BigInteger lowProduct = karatsubaMultiply(low1, low2);
+BigInteger middleProduct = karatsubaMultiply(high1.add(low1),
+high2.add(low2)).subtract(highProduct).subtract(lowProduct);
+
+// Combine the results
+return highProduct.multiply(BigInteger.TEN.pow(2 * halfLength))
+.add(middleProduct.multiply(BigInteger.TEN.pow(halfLength)))
+.add(lowProduct);
+}
+
+public static BigInteger karatsubaSquare(BigInteger num) {
+return karatsubaMultiply(num, num);
+}
+
+public static void main(String[] args) {
+Scanner scanner = new Scanner(System.in);
+System.out.print(&quot;Enter a number: &quot;);
+BigInteger inputNum = new BigInteger(scanner.nextLine());
+
+BigInteger result = karatsubaSquare(inputNum);
+System.out.println(&quot;The square is: &quot; + result);
+}
+}
